@@ -1,0 +1,94 @@
+@font-face {
+  font-family: "Kumbh Sans";
+  src: url("/fonts/KumbhSans-VariableFont_YOPQ,wght.ttf") format("truetype");
+}
+
+* {
+  font-family: "Kumbh Sans", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --grey-950: #1d2026;
+  --grey-500: #69707d;
+  --grey-300: #c3cad9;
+  --grey-100: #e4e9f2;
+  --grey-50: #f6f8fd;
+  --orange-500: #ff7e1b;
+  --orange-300: #ffab6a;
+}
+
+.text-preset-1 {
+  font-weight: bold;
+  font-size: 2.75rem;
+  line-height: 3rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.text-preset-2 {
+  font-weight: bold;
+  font-size: 1.75rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.text-preset-3-bold {
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.text-preset-3-regular {
+  font-weight: normal;
+  font-size: 1rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.text-preset-4 {
+  font-weight: normal;
+  font-size: 0.938rem;
+  line-height: 1.625rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.text-preset-5 {
+  font-weight: bold;
+  font-size: 0.813rem;
+  line-height: 1rem;
+  letter-spacing: 0.125rem;
+  margin: 0;
+}
+
+.text-preset-6 {
+  font-weight: bold;
+  font-size: 0.75rem;
+  line-height: 0.938rem;
+  letter-spacing: 0.116rem;
+  margin: 0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100dvh;
+  width: 100dvw;
+}
+
+@media (max-width: 1024px) {
+  html,
+  body {
+    width: 100dvw;
+    height: 100dvh;
+  }
+}
