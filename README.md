@@ -16,12 +16,12 @@ Users should be able to:
 ### Screenshot
 - PC
 
-![](./screenshot.jpg)
+![Screenshot - PC](./Screenshot%20-%20PC.png)
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [GitHub](https://github.com/weslleyvieira-dev/Ecommerce-Product-Page)
+- Live Site URL: [Vercel](https://ecommerce-product-page-tawny.vercel.app/)
 
 ### Built with
 

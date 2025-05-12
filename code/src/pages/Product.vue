@@ -158,16 +158,17 @@ function handleClickNext() {
       </div>
       <div class="buy-container">
         <div class="quantity-btns">
-          <img
+          <div
             v-on:click="!isDecreaseDisabled && handleDecreaseQuantity()"
-            src="/assets/icons/icon-minus.svg"
+            class="quantity-img"
             :class="{ 'not-allowed': isDecreaseDisabled }"
-          />
+          >
+            <img src="/assets/icons/icon-minus.svg" />
+          </div>
           <p class="text-preset-3-bold">{{ quantityBuy }}</p>
-          <img
-            v-on:click="handleIncreaseQuantity()"
-            src="/assets/icons/icon-plus.svg"
-          />
+          <div v-on:click="handleIncreaseQuantity()" class="quantity-img">
+            <img src="/assets/icons/icon-plus.svg" />
+          </div>
         </div>
         <div v-on:click="addToCart(product, quantityBuy)" class="add-btn">
           <img src="/assets/icons/icon-cart.svg" />
@@ -300,9 +301,17 @@ main {
   width: 9.75rem;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.875rem;
   border-radius: 0.625rem;
   background-color: var(--grey-50);
+}
+
+.quantity-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+  padding: 0 0.875rem;
 }
 
 .quantity-btns img {

@@ -72,7 +72,7 @@ watch(cartStore.cartItems, (newValue) => {
     <div class="actions-container">
       <div class="cart-container">
         <img
-          v-on:click="toggleCartModal"
+          v-on:click="toggleCartModal(false)"
           class="cart-icon"
           :class="{ 'cart-icon-active': cartModalOpen }"
           src="/assets/icons/icon-cart.svg"
