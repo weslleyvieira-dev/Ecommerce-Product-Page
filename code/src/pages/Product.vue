@@ -10,11 +10,25 @@ const product = products.find((product) => product.id === productId.value);
 const images = [product.image1, product.image2, product.image3, product.image4];
 const thumbs = [product.thumb1, product.thumb2, product.thumb3, product.thumb4];
 const currentImage = ref(images[0]);
+const lightboxImage = ref(images[0]);
 const currentThumb = ref(thumbs[0]);
+const lightboxThumb = ref(thumbs[0]);
 const quantityBuy = ref(1);
 const lightboxFocus = ref(false);
 const isDecreaseDisabled = ref(true);
 const slideDirection = ref("next");
+
+function openLightbox() {
+  lightboxImage.value = currentImage.value;
+  lightboxThumb.value = currentThumb.value;
+  lightboxFocus.value = true;
+}
+
+function closeLightbox() {
+  currentImage.value = lightboxImage.value;
+  currentThumb.value = lightboxThumb.value;
+  lightboxFocus.value = false;
+}
 
 function discountCalc(price, discount) {
   return price - (price * discount) / 100;
@@ -41,41 +55,44 @@ function addToCart(product, quantity) {
 }
 
 function handleClickPrevious() {
-  const currentIndex = images.indexOf(currentImage.value);
+  const active = lightboxFocus.value ? lightboxImage.value : currentImage.value;
+  const index = images.indexOf(active);
   slideDirection.value = "prev";
+  const targetImage = lightboxFocus.value ? lightboxImage : currentImage;
+  const targetThumb = lightboxFocus.value ? lightboxThumb : currentThumb;
 
-  if (currentIndex > 0) {
-    currentImage.value = images[currentIndex - 1];
-    currentThumb.value = thumbs[currentIndex - 1];
+  if (index > 0) {
+    targetImage.value = images[index - 1];
+    targetThumb.value = thumbs[index - 1];
   } else {
-    currentImage.value = images[images.length - 1];
-    currentThumb.value = thumbs[thumbs.length - 1];
+    targetImage.value = images[images.length - 1];
+    targetThumb.value = thumbs[thumbs.length - 1];
   }
 }
 
 function handleClickNext() {
-  const currentIndex = images.indexOf(currentImage.value);
-  slideDirection.value = "next";
+  const active = lightboxFocus.value ? lightboxImage.value : currentImage.value;
+  const index = images.indexOf(active);
 
-  if (currentIndex < images.length - 1) {
-    currentImage.value = images[currentIndex + 1];
-    currentThumb.value = thumbs[currentIndex + 1];
+  slideDirection.value = "next";
+  const targetImage = lightboxFocus.value ? lightboxImage : currentImage;
+  const targetThumb = lightboxFocus.value ? lightboxThumb : currentThumb;
+
+  if (index < images.length - 1) {
+    targetImage.value = images[index + 1];
+    targetThumb.value = thumbs[index + 1];
   } else {
-    currentImage.value = images[0];
-    currentThumb.value = thumbs[0];
+    targetImage.value = images[0];
+    targetThumb.value = thumbs[0];
   }
 }
 </script>
 
 <template>
   <main>
-    <div
-      v-if="lightboxFocus"
-      class="lightbox"
-      @click.self="lightboxFocus = false"
-    >
+    <div v-if="lightboxFocus" class="lightbox" @click.self="closeLightbox()">
       <img
-        v-on:click="lightboxFocus = false"
+        v-on:click="closeLightbox()"
         class="focus-close"
         src="/assets/icons/icon-close.svg"
       />
@@ -88,7 +105,11 @@ function handleClickNext() {
           <img src="/assets/icons/icon-previous.svg" />
         </button>
         <transition :name="slideDirection" mode="out-in">
-          <img :key="currentImage" class="lightbox-image" :src="currentImage" />
+          <img
+            :key="lightboxImage"
+            class="lightbox-image"
+            :src="lightboxImage"
+          />
         </transition>
         <button
           v-on:click="handleClickNext()"
@@ -103,12 +124,12 @@ function handleClickNext() {
           v-for="(thumb, index) in thumbs"
           :key="index"
           class="thumb"
-          :class="{ 'active-thumb': currentImage === images[index] }"
+          :class="{ 'active-thumb': lightboxImage === images[index] }"
           @click="
             slideDirection =
-              index > images.indexOf(currentImage) ? 'next' : 'prev';
-            currentImage = images[index];
-            currentThumb = thumb;
+              index > images.indexOf(lightboxImage) ? 'next' : 'prev';
+            lightboxImage = images[index];
+            lightboxThumb = thumb;
           "
         >
           <img :src="thumb" />
@@ -116,14 +137,30 @@ function handleClickNext() {
       </div>
     </div>
     <div class="images-container">
-      <transition :name="slideDirection" mode="out-in">
-        <img
-          v-on:click="lightboxFocus = true"
-          class="image-focus"
-          :src="currentImage"
-          :key="currentImage"
-        />
-      </transition>
+      <div class="image-preview">
+        <button
+          v-on:click="handleClickPrevious()"
+          class="preview-prev"
+          :class="{ 'slide-prev': slideDirection === 'prev' }"
+        >
+          <img src="/assets/icons/icon-previous.svg" />
+        </button>
+        <transition :name="slideDirection" mode="out-in">
+          <img
+            @click="openLightbox()"
+            class="image-focus"
+            :src="currentImage"
+            :key="currentImage"
+          />
+        </transition>
+        <button
+          v-on:click="handleClickNext()"
+          class="preview-next"
+          :class="{ 'slide-next': slideDirection === 'next' }"
+        >
+          <img src="/assets/icons/icon-next.svg" />
+        </button>
+      </div>
       <div class="thumbs-row">
         <div
           v-for="(thumb, index) in thumbs"
@@ -184,14 +221,66 @@ main {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 13rem 13rem 8rem;
+  justify-content: center;
+  margin: 0 13rem;
   gap: 8rem;
+  height: calc(99vh - 7rem);
 }
 
 .images-container {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.image-preview .preview-prev,
+.image-preview .preview-next {
+  display: none;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  position: absolute;
+  background-color: white;
+  z-index: 1;
+}
+
+.image-preview .preview-prev {
+  left: 0.75rem;
+}
+
+.image-preview .preview-next {
+  right: 0.75rem;
+}
+
+.image-preview .preview-prev img,
+.image-preview .preview-next img {
+  width: 0.75rem;
+  height: 1rem;
+}
+
+.image-preview .preview-prev:hover,
+.image-preview .preview-next:hover {
+  opacity: 1;
+  background-color: white;
+}
+
+.image-preview .preview-prev:hover img,
+.image-preview .preview-next:hover img {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(53%) sepia(77%) saturate(1605%)
+    hue-rotate(347deg) brightness(101%) contrast(100%);
 }
 
 .image-focus {
@@ -471,5 +560,99 @@ main {
 .prev-leave-to {
   transform: translateX(50%);
   opacity: 0;
+}
+
+@media (max-width: 1024px) {
+  main {
+    flex-direction: column;
+    margin: 3rem 5rem;
+    height: auto;
+    gap: 3rem;
+  }
+
+  .images-container {
+    width: 100%;
+  }
+
+  .image-focus {
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .image-preview .preview-prev,
+  .image-preview .preview-next {
+    display: flex;
+  }
+
+  .thumbs-row {
+    display: none;
+  }
+
+  .infos-container {
+    margin-bottom: 4rem;
+  }
+
+  .text-preset-3-regular {
+    margin: 1.5rem 0;
+  }
+
+  .buy-container {
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .quantity-btns, .add-btn {
+    width: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  main {
+    margin: 0;
+    gap: 1.5rem;
+  }
+
+  .image-focus {
+    border-radius: 0;
+    height: 18.75rem;
+    object-fit: cover;
+  }
+
+  .infos-container {
+    margin: 0 1.5rem 4rem;
+  }
+
+  .text-preset-5 {
+    margin-bottom: 1rem;
+  }
+
+  .text-preset-1 {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+  
+  .text-preset-3-regular {
+    font-size: 0.938rem;
+    margin: 1rem 0 2rem;
+  }
+
+  .price-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .buy-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 8rem;
+    margin-top: 2rem;
+    gap: 1rem;
+  }
+
+  .quantity-btns, .add-btn {
+    width: 100%;
+    height: 3.5rem;
+  }
 }
 </style>

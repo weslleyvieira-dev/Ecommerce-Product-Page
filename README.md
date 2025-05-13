@@ -14,9 +14,9 @@ Users should be able to:
 - View the cart and remove items from it
 
 ### Screenshot
-- PC
 
-![Screenshot - PC](./Screenshot%20-%20PC.png)
+[![Screenshot - PC](</Screenshot%20-%20PC%20(Thumb).png>)](/Screenshot%20-%20PC.png)
+[![Screenshot - Mobile](</Screenshot%20-%20Mobile%20(Thumb).png>)](Screenshot%20-%20Mobile.png)
 
 ### Links
 

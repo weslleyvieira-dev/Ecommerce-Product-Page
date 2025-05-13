@@ -83,6 +83,11 @@ body {
 html {
   height: 100dvh;
   width: 100dvw;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
 }
 
 @media (max-width: 1024px) {
@@ -90,5 +95,6 @@ html {
   body {
     width: 100dvw;
     height: 100dvh;
+    overflow: visible;
   }
 }

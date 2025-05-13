@@ -5,8 +5,23 @@ import Cart from "./Cart.vue";
 
 const cartStore = useCartStore();
 const cartModalOpen = ref(false);
+const isMenuOpen = ref(false);
 
-function toggleCartModal(autoClose = false) {
+function debounce(fn, delay = 200) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
+
+function _toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value;
+}
+
+const toggleMenu = debounce(_toggleMenu);
+
+function _toggleCartModal(autoClose = false) {
   cartModalOpen.value = !cartModalOpen.value;
   if (autoClose) {
     setTimeout(() => {
@@ -14,6 +29,8 @@ function toggleCartModal(autoClose = false) {
     }, 2500);
   }
 }
+
+const toggleCartModal = debounce(_toggleCartModal);
 
 function closeCartModal(event) {
   const cartMenu = document.querySelector(".cart-menu");
@@ -36,38 +53,56 @@ onUnmounted(() => {
   document.removeEventListener("click", closeCartModal);
 });
 
-watch(cartStore.cartItems, (newValue) => {
-  if (newValue.length > 0) {
-      setTimeout(() => {
-        toggleCartModal(true);
-      }, 1);
+watch(
+  () => cartStore.cartItems.length,
+  (newLen, oldLen) => {
+    if (newLen > 0 && oldLen === 0) {
+      setTimeout(() => toggleCartModal(true), 1);
+    }
   }
-});
+);
 </script>
 
 <template>
+  <div
+    v-if="isMenuOpen"
+    class="lightbox-container"
+    :class="{ 'menu-open': isMenuOpen }"
+  ></div>
   <header>
-    <div class="logo-container">
-      <img class="logo" src="/assets/icons/logo.svg" />
-      <nav>
-        <ul>
-          <li class="text-preset-4">
-            <a href="#">Collections</a>
-          </li>
-          <li class="text-preset-4">
-            <a href="#">Men</a>
-          </li>
-          <li class="text-preset-4">
-            <a href="#">Women</a>
-          </li>
-          <li class="text-preset-4">
-            <a href="#">About</a>
-          </li>
-          <li class="text-preset-4">
-            <a href="#">Contact</a>
-          </li>
-        </ul>
-      </nav>
+    <div class="menu-container">
+      <img
+        @click="toggleMenu"
+        class="menu-icon"
+        :src="
+          isMenuOpen
+            ? '/assets/icons/icon-close.svg'
+            : '/assets/icons/icon-menu.svg'
+        "
+        :alt="isMenuOpen ? 'Close' : 'Menu'"
+      />
+      <div class="logo-container">
+        <img class="logo" src="/assets/icons/logo.svg" alt="Logo" />
+        <nav :class="{ 'menu-open': isMenuOpen }">
+          <ul :class="{ 'menu-open': isMenuOpen }">
+            <li class="text-preset-4">
+              <a href="#">Collections</a>
+            </li>
+            <li class="text-preset-4">
+              <a href="#">Men</a>
+            </li>
+            <li class="text-preset-4">
+              <a href="#">Women</a>
+            </li>
+            <li class="text-preset-4">
+              <a href="#">About</a>
+            </li>
+            <li class="text-preset-4">
+              <a href="#">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
     <div class="actions-container">
       <div class="cart-container">
@@ -107,10 +142,11 @@ header {
   height: 7rem;
   width: -webkit-fill-available;
   width: -moz-available;
-  position: fixed;
-  top: 0;
-  left: 0;
   border-bottom: 1px solid var(--grey-100);
+}
+
+.menu-icon {
+  display: none;
 }
 
 .logo-container {
@@ -215,5 +251,108 @@ nav ul li a {
 .fade-leave-from {
   opacity: 1;
   transform: translateX(-50%);
+}
+
+@media (max-width: 1024px) {
+  header {
+    margin: 0 5rem;
+  }
+
+  .menu-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .menu-icon {
+    display: flex;
+    width: 1rem;
+    height: 1rem;
+    align-self: end;
+    cursor: pointer;
+    z-index: 11;
+  }
+
+  .logo-container nav {
+    visibility: hidden;
+  }
+
+  .logo-container nav.menu-open {
+    visibility: visible;
+  }
+
+  .logo-container nav ul {
+    flex-direction: column;
+    height: 100vh;
+    background-color: white;
+    align-items: start;
+    width: 18.75rem;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 7.25rem 0 0 5rem;
+    resize: none;
+    box-sizing: border-box;
+    transition: all 0.5s ease;
+    transform: translateX(-100%);
+  }
+
+  .logo-container nav ul.menu-open {
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  nav ul {
+    gap: 1.5rem;
+  }
+
+  nav ul li a {
+    color: var(--grey-950);
+    font-size: 1.125rem;
+    font-weight: bold;
+    line-height: 1.625rem;
+  }
+
+  .lightbox-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+}
+
+@media (max-width: 767px) {
+  header {
+    height: 4.25rem;
+    border-bottom: none;
+    margin: 0 1.5rem;
+  }
+
+  .logo-container nav ul {
+    width: 15.625rem;
+    padding-left: 1.5rem;
+  }
+
+  .cart-menu {
+    position: fixed;
+    top: 4.75rem;
+    left: 0;
+    transform: none;
+    margin: 0 0.5rem;
+  }
+
+  .actions-container {
+    gap: 1.5rem;
+  }
+
+  .profile-pic {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 </style>
