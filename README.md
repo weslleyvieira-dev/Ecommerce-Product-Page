@@ -13,14 +13,11 @@ Users should be able to:
 - Add items to the cart
 - View the cart and remove items from it
 
-### Screenshot
+### Screenshots
 
-- PC 
+PC | Mobile | Tablet
 
 [![Screenshot - PC](</screenshots/PC (Thumb).png>)](/screenshots/PC.png)
-
-- Mobile and Tablet
-
 [![Screenshot - Mobile](</screenshots/Mobile (Thumb).png>)](/screenshots/Mobile.png)
 [![Screenshot - Tablet](</screenshots/Tablet (Thumb).png>)](/screenshots/Tablet.png)
 
