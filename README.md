@@ -15,8 +15,14 @@ Users should be able to:
 
 ### Screenshot
 
-[![Screenshot - PC](</Screenshot%20-%20PC%20(Thumb).png>)](/Screenshot%20-%20PC.png)
-[![Screenshot - Mobile](</Screenshot%20-%20Mobile%20(Thumb).png>)](Screenshot%20-%20Mobile.png)
+- PC 
+
+[![Screenshot - PC](</screenshots/PC (Thumb).png>)](/screenshots/PC.png)
+
+- Mobile and Tablet
+
+[![Screenshot - Mobile](</screenshots/Mobile (Thumb).png>)](/screenshots/Mobile.png)
+[![Screenshot - Tablet](</screenshots/Tablet (Thumb).png>)](/screenshots/Tablet.png)
 
 ### Links
 
